@@ -139,6 +139,26 @@ services:
     hostname: mongo
     container_name: mongo
     restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - /my/own/datadir:/data/db
+    networks:
+      - default
+      - service
+
+  mongo-express:
+    image: mongo-express
+    hostname: mongo-express
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - 10100:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
     networks:
       - default
       - service
