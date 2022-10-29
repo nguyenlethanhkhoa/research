@@ -103,6 +103,18 @@ services:
       - service
     restart: unless-stopped
 
+  kafka:
+    container_name: kafka
+    image: bitnami/kafka
+    hostname: kafka
+    ports:
+      - 9092:9092
+    volumes:
+      - /root/app/kafka:/bitnami/kafka
+    restart: unless-stopped
+    networks:
+      - default
+      - service
 
 networks:
   service:
