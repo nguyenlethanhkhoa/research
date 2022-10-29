@@ -1,0 +1,333 @@
+version: "3.7"
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  # zookeeper:
+  #   image: 'bitnami/zookeeper:latest'
+  #   networks:
+  #     - app-tier
+
+  # kafka:
+  #   container_name: kafka
+  #   image: bitnami/kafka
+  #   hostname: kafka
+  #   ports:
+  #     - 9092:9092
+  #   volumes:
+  #     - /root/app/kafka:/bitnami/kafka
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+  # redis:
+  #   container_name: redis
+  #   hostname: redis
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+  #   networks:
+  #     - app-tier
+
+  # vault:
+  #   container_name: vault
+  #   hostname: vault
+  #   image: vault
+  #   environment:
+  #     VAULT_DEV_ROOT_TOKEN_ID: myroot
+  #     VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:1234
+  #   networks:
+  #     - app-tier
+
+  # keycloak:
+  #   container_name: keycloak
+  #   hostname: keycloak
+  #   image: keycloak
+  #   environment:
+  #     PROXY_ADDRESS_FORWARDING: 'true'
+  #     KEYCLOAK_USER: admin
+  #     KEYCLOAK_PASSWORD: admin
+  #   volumes:
+  #     - /home/truong/keycloak/keycloak_example_data/:/opt/jboss/keycloak/standalone/data/
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+  # cassandra:
+  #   image: docker.io/bitnami/cassandra:4.0
+  #   hostname: namiq_cassandra
+  #   ports:
+  #     - 7000:7000
+  #     - 7001:7001
+  #     - 7199:7199
+  #     - 9042:9042
+  #     - 9160:9160
+  #   environment:
+  #     CASSANDRA_SEEDS: cassandra
+  #     MAX_HEAP_SIZE: 512M
+  #     HEAP_NEWSIZE: 100M
+  #     CASSANDRA_PASSWORD_SEEDER: "yes"
+  #     CASSANDRA_PASSWORD: cassandra
+  #     CASSANDRA_RPC_ADDRESS: 0.0.0.0
+  #   container_name: namiq_cassandra
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+  # graylog:
+  #   image: graylog/graylog:4.3
+  #   hostname: graylog
+  #   ports:
+  #     - 9000:9000
+  #     - 12201:12201
+  #     - 1514:1514
+  #     - 5555:5555
+  #   environment:
+  #     GRAYLOG_HTTP_EXTERNAL_URI:  "http://127.0.0.1:9000/"
+  #   container_name: graylog
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+  # mongo:
+  #   image: mongo
+  #   hostname: mongo
+  #   container_name: mongo
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+  
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  #   networks:
+  #     - app-tier
+
+  # rabbitmq:
+  #   container_name: rabbitmq
+  #   hostname: rabbitmq
+  #   image: rabbitmq
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+# -------------------------- Background Services ---------------------------- #
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: root
+
+  postgres_admin:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8081
+
+  # kong:
+  #   image: kong
+  #   hostname: kong
+  #   ports:
+  #     - 8000:8000
+  #     - 8443:8443
+  #     - 8001:8001
+  #     - 8444:8444
+  #   environment:
+  #     KONG_DATABASE: postgres
+  #     KONG_PG_HOST: kong_db
+  #     KONG_PROXY_ACCESS_LOG: '/dev/stdout'
+  #     KONG_ADMIN_ACCESS_LOG: '/dev/stdout'
+  #     KONG_PROXY_ERROR_LOG: '/dev/stderr'
+  #     KONG_ADMIN_ERROR_LOG: '/dev/stderr'
+  #     KONG_ADMIN_LISTEN: 0.0.0.0:8001
+  #     KONG_ADMIN_LISTEN_SSL: 0.0.0.0:8444
+  #   container_name: kong
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-tier
+
+  # kong_dashboard:
+  #   image: pgbi/kong-dashboard
+  #   command: "start --kong-url http://kong:8001"
+  #   ports:
+  #     - 8080:8080
+
+# Business Services
+  # user:
+  #   container_name: user
+  #   hostname: user
+  #   build:
+  #     context: .
+  #     dockerfile: services/user/Dockerfile
+  #   image: user
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+    
+  # chat:
+  #   container_name: chat
+  #   hostname: chat
+  #   build:
+  #     context: .
+  #     dockerfile: services/chat/Dockerfile
+  #   image: chat
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # product:
+  #   container_name: product
+  #   hostname: product
+  #   build:
+  #     context: .
+  #     dockerfile: services/product/Dockerfile
+  #   image: product
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # order:
+  #   container_name: order
+  #   hostname: order
+  #   build:
+  #     context: .
+  #     dockerfile: services/order/Dockerfile
+  #   image: order
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # payment:
+  #   container_name: payment
+  #   hostname: payment
+  #   build:
+  #     context: .
+  #     dockerfile: services/payment/Dockerfile
+  #   image: payment
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # promotion:
+  #   container_name: promotion
+  #   hostname: promotion
+  #   build:
+  #     context: .
+  #     dockerfile: services/promotion/Dockerfile
+  #   image: promotion
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # promotion:
+  #   container_name: promotion
+  #   hostname: promotion
+  #   build:
+  #     context: .
+  #     dockerfile: services/promotion/Dockerfile
+  #   image: promotion
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # behavior_tracking:
+  #   container_name: behavior_tracking
+  #   hostname: behavior_tracking
+  #   build:
+  #     context: .
+  #     dockerfile: services/behavior_tracking/Dockerfile
+  #   image: behavior_tracking
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+    
+  # shop:
+  #   container_name: shop
+  #   hostname: shop
+  #   build:
+  #     context: .
+  #     dockerfile: services/shop/Dockerfile
+  #   image: shop
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api
+
+  # cart:
+  #   container_name: cart
+  #   hostname: cart
+  #   build:
+  #     context: .
+  #     dockerfile: services/cart/Dockerfile
+  #   image: cart
+  #   ports:
+  #     - 10000: 8000
+  #   environment:
+  #     DB_HOST: 192.168.100.22
+  #     DB_PORT: 5432
+  #     DB_USER: namiq
+  #     DB_PASSWORD: root
+  #     DB_DEFAULT_NAME: namiq_customer360_db
+  #     INTERFACE_URL: http://192.168.100.22:10000/api

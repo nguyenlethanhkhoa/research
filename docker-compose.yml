@@ -1,0 +1,95 @@
+version: "3.7"
+
+networks:
+  service:
+    external: true
+
+services:
+    
+  #######################################
+  # Postgres: Kong Database
+  #######################################
+  kong_db:
+    image: postgres:9.6-alpine
+    container_name: kong_db
+    hostname: kong_db
+    environment:
+      POSTGRES_DB: kong
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kong
+    networks:
+      - service
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kong"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  #######################################
+  # Kong database migration
+  #######################################
+  kong-migrations:
+    image: kong:latest
+    command: kong migrations bootstrap
+    depends_on:
+      kong_db:
+        condition: service_healthy
+    env_file:
+      - services/kong/kong.env
+    networks:
+      - service
+
+  #######################################
+  # Kong: The API Gateway
+  #######################################
+  kong:
+    image: kong:latest
+    container_name: kong
+    hostname: kong
+    depends_on:
+      kong_db:
+        condition: service_healthy
+    env_file:
+      - services/kong/kong.env
+    networks:
+      - service
+    ports:
+      - "127.0.0.1:8001:8001"
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
+  #######################################
+  # Konga database migration
+  #######################################
+  konga-prepare:
+    image: pantsel/konga
+    container_name: konga_prepare
+    command: "-c prepare -a postgres -u postgresql://kong:kong@kong_db:5432/konga_db"
+    networks:
+      - service
+    depends_on:
+      kong_db:
+        condition: service_healthy
+
+  #######################################
+  # Konga: GUI of KONG Admin API
+  #######################################
+  konga:
+    image: pantsel/konga
+    container_name: konga
+    hostname: konga
+    env_file:
+      - services/kong/kong.env
+    networks:
+      - service
+    ports:
+      - 1337:1337
+    restart: unless-stopped
+    depends_on:
+      kong_db:
+        condition: service_healthy
