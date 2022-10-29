@@ -103,19 +103,6 @@ services:
       - service
     restart: unless-stopped
 
-  kafka:
-    container_name: kafka
-    image: bitnami/kafka
-    hostname: kafka
-    ports:
-      - 9092:9092
-    volumes:
-      - /root/app/kafka:/bitnami/kafka
-    restart: unless-stopped
-    networks:
-      - default
-      - service
-
   cassandra:
     image: docker.io/bitnami/cassandra:4.0
     hostname: cassandra
@@ -142,6 +129,15 @@ services:
     image: rabbitmq
     hostname: rabbitmq
     container_name: rabbitmq
+    restart: unless-stopped
+    networks:
+      - default
+      - service
+
+  mongo:
+    image: mongo
+    hostname: mongo
+    container_name: mongo
     restart: unless-stopped
     networks:
       - default
