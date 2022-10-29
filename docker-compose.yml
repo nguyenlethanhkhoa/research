@@ -4,9 +4,10 @@ services:
   #######################################
   # Postgres: Kong Database
   #######################################
-  kong-database:
+  kong_db:
     image: postgres:9.6-alpine
-    container_name: kong-db
+    container_name: kong_db
+    hostname: kong_db
     environment:
       POSTGRES_DB: kong
       POSTGRES_USER: kong
@@ -18,7 +19,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: on-failure
+    restart: unless-stopped
+    volumes:
+      -/var/lib/postgres/kong_db/data:/var/lib/postgresql/data
+      
 
   #######################################
   # Kong database migration
