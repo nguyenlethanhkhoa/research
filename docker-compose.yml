@@ -13,7 +13,7 @@ services:
       POSTGRES_USER: kong
       POSTGRES_PASSWORD: kong
     networks:
-      - default
+      - service
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "kong"]
       interval: 10s
@@ -52,8 +52,7 @@ services:
     env_file:
       - services/kong/kong.env
     networks:
-      - default
-      - proxy
+      - service
     ports:
       - "127.0.0.1:8001:8001"
     healthcheck:
@@ -86,13 +85,12 @@ services:
     env_file:
       - services/kong/kong.env
     networks:
-      - default
-      - proxy
+      - service
     restart: on-failure
     depends_on:
       kong-db:
         condition: service_healthy
 
 networks:
-  proxy:
+  service:
     external: true
