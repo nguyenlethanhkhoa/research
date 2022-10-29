@@ -138,6 +138,15 @@ services:
       - default
       - service
 
+  rabbitmq:
+    image: rabbitmq
+    hostname: rabbitmq
+    container_name: rabbitmq
+    restart: unless-stopped
+    networks:
+      - default
+      - service
+
 networks:
   service:
     external: true
