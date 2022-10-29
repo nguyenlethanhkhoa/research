@@ -22,8 +22,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/lib/postgres/kong-db/data:/var/lib/postgresql/data
-      
-
+  
   #######################################
   # Kong database migration
   #######################################
@@ -92,6 +91,18 @@ services:
     depends_on:
       kong-db:
         condition: service_healthy
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - default
+      - service
+    restart: unless-stopped
+
 
 networks:
   service:
