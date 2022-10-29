@@ -44,7 +44,8 @@ services:
   #######################################
   kong:
     image: kong:latest
-    container_name: kong-api
+    container_name: kong
+    hostname: kong
     depends_on:
       kong-db:
         condition: service_healthy
@@ -80,6 +81,8 @@ services:
   #######################################
   konga:
     image: pantsel/konga
+    container_name: konga
+    hostname: konga
     env_file:
       - services/kong/kong.env
     networks:
