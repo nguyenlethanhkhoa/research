@@ -31,7 +31,7 @@ services:
     image: kong:latest
     command: kong migrations bootstrap
     depends_on:
-      kong-database:
+      kong_db:
         condition: service_healthy
     env_file:
       - ./services/kong/kong.env
@@ -46,7 +46,7 @@ services:
     image: kong:latest
     container_name: kong-api
     depends_on:
-      kong-database:
+      kong_db:
         condition: service_healthy
     env_file:
       - services/kong/kong.env
@@ -72,7 +72,7 @@ services:
       - default
     restart: on-failure
     depends_on:
-      kong-database:
+      kong_db:
         condition: service_healthy
 
   #######################################
@@ -87,7 +87,7 @@ services:
       - proxy
     restart: on-failure
     depends_on:
-      kong-database:
+      kong_db:
         condition: service_healthy
 
 networks:
