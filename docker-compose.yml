@@ -67,7 +67,7 @@ services:
   #######################################
   konga-prepare:
     image: pantsel/konga
-    command: "-c prepare -a postgres -u postgresql://kong:kong@kong-db:5432/konga_db"
+    command: "-c prepare -a postgres -u postgresql://kong:kong@kong_db:5432/konga_db"
     networks:
       - default
     restart: on-failure
