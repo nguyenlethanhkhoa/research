@@ -4,10 +4,10 @@ services:
   #######################################
   # Postgres: Kong Database
   #######################################
-  kong_db:
+  kong-db:
     image: postgres:9.6-alpine
-    container_name: kong_db
-    hostname: kong_db
+    container_name: kong-db
+    hostname: kong-db
     environment:
       POSTGRES_DB: kong
       POSTGRES_USER: kong
@@ -21,7 +21,7 @@ services:
       retries: 5
     restart: unless-stopped
     volumes:
-      - /var/lib/postgres/kong_db/data:/var/lib/postgresql/data
+      - /var/lib/postgres/kong-db/data:/var/lib/postgresql/data
       
 
   #######################################
@@ -31,7 +31,7 @@ services:
     image: kong:latest
     command: kong migrations bootstrap
     depends_on:
-      kong_db:
+      kong-db:
         condition: service_healthy
     env_file:
       - ./services/kong/kong.env
@@ -46,7 +46,7 @@ services:
     image: kong:latest
     container_name: kong-api
     depends_on:
-      kong_db:
+      kong-db:
         condition: service_healthy
     env_file:
       - services/kong/kong.env
@@ -67,12 +67,12 @@ services:
   #######################################
   konga-prepare:
     image: pantsel/konga
-    command: "-c prepare -a postgres -u postgresql://kong:kong@kong_db:5432/konga_db"
+    command: "-c prepare -a postgres -u postgresql://kong:kong@kong-db:5432/konga_db"
     networks:
       - default
     restart: on-failure
     depends_on:
-      kong_db:
+      kong-db:
         condition: service_healthy
 
   #######################################
@@ -87,7 +87,7 @@ services:
       - proxy
     restart: on-failure
     depends_on:
-      kong_db:
+      kong-db:
         condition: service_healthy
 
 networks:
