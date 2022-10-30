@@ -143,7 +143,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
-      - /my/own/datadir:/data/db
+      - /var/lib/mongodb/data/db:/data/db
     networks:
       - default
       - service
