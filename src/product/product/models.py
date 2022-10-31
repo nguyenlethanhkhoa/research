@@ -1,16 +1,42 @@
 from django.db import models
 
-class Reporter(models.Model):
-    full_name = models.CharField(max_length=70)
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(nullable=False, auto_now_add=True)
+    modified_at = models.DateTimeField(nullable=False, auto_now=True)
+    deleted_at = models.DateTimeField(nullable=True)
 
-    def __str__(self):
-        return self.full_name
+class Category(BaseModel):
+    parent_id = models.BigIntegerField()
+    title = models.CharField(max_length=70)
+    description = models.TextField()
 
-class Article(models.Model):
-    pub_date = models.DateField()
-    headline = models.CharField(max_length=200)
-    content = models.TextField()
-    reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+class Tag(BaseModel):
+    title = models.CharField(max_length=70)
+    description = models.TextField()
 
-    def __str__(self):
-        return self.headline
+class Product(BaseModel):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+
+    tags = models.ManyToManyField(Tag)
+    categories = models.ManyToManyField(Category)
+    property_names = models.ManyToManyField(PropertyName)
+    property_values = models.ManyToManyField(PropertyValue)
+
+class ProductVariant(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.FloatField()
+    qty = models.IntegerField()
+
+    property_names = models.ManyToManyField(PropertyName)
+    property_values = models.ManyToManyField(PropertyValue)
+
+class PropertyName(models.Model):
+    title = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
+    required = models.BooleanField(default=False)
+    selectable = models.BooleanField(default=False)
+
+class PropertyValue(models.Model):
+    property_id = models.BigIntegerField()
+    value = models.TextField()
