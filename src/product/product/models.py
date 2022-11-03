@@ -14,6 +14,16 @@ class Tag(BaseModel):
     title = models.CharField(max_length=70)
     description = models.TextField(null=True)
 
+class PropertyName(models.Model):
+    title = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
+    required = models.BooleanField(default=False)
+    selectable = models.BooleanField(default=False)
+
+class PropertyValue(models.Model):
+    property_id = models.BigIntegerField()
+    value = models.TextField()
+
 class Product(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True)
@@ -30,13 +40,3 @@ class ProductVariant(BaseModel):
 
     property_names = models.ManyToManyField(PropertyName)
     property_values = models.ManyToManyField(PropertyValue)
-
-class PropertyName(models.Model):
-    title = models.CharField(max_length=200)
-    type = models.CharField(max_length=200)
-    required = models.BooleanField(default=False)
-    selectable = models.BooleanField(default=False)
-
-class PropertyValue(models.Model):
-    property_id = models.BigIntegerField()
-    value = models.TextField()
