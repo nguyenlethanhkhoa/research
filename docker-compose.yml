@@ -14,8 +14,6 @@ services:
       POSTGRES_PASSWORD: kong
     networks:
       - default
-    ports:
-      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "kong"]
       interval: 10s
@@ -164,6 +162,27 @@ services:
     networks:
       - default
       - service
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: research
+      POSTGRES_PASSWORD: research
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - /var/lib/postgres/postgres/data:/var/lib/postgresql/data
 
 networks:
   service:
