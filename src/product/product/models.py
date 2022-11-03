@@ -1,9 +1,9 @@
 from django.db import models
 
 class BaseModel(models.Model):
-    created_at = models.DateTimeField(nullable=False, auto_now_add=True)
-    modified_at = models.DateTimeField(nullable=False, auto_now=True)
-    deleted_at = models.DateTimeField(nullable=True)
+    created_at = models.DateTimeField(blank=False, null=False, auto_now_add=True)
+    modified_at = models.DateTimeField(blank=False, null=False, auto_now=True)
+    deleted_at = models.DateTimeField(null=True)
 
 class Category(BaseModel):
     parent_id = models.BigIntegerField()
@@ -12,11 +12,11 @@ class Category(BaseModel):
 
 class Tag(BaseModel):
     title = models.CharField(max_length=70)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
 class Product(BaseModel):
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     tags = models.ManyToManyField(Tag)
     categories = models.ManyToManyField(Category)
@@ -25,8 +25,8 @@ class Product(BaseModel):
 
 class ProductVariant(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.FloatField()
-    qty = models.IntegerField()
+    price = models.FloatField(default=0)
+    qty = models.IntegerField(default=0)
 
     property_names = models.ManyToManyField(PropertyName)
     property_values = models.ManyToManyField(PropertyValue)
