@@ -10,15 +10,13 @@ class Product(BaseModel):
         'tag.Tag', related_name='products'
     )
     categories = models.ManyToManyField(
-        'category.Category', on_delete=models.CASCADE, related_name='products'
+        'category.Category', related_name='products'
     )
     property_names = models.ManyToManyField(
-        'product.PropertyName',
-        on_delete=models.CASCADE
+        'product.PropertyName'
     )
     property_values = models.ManyToField(
-        'product.PropertyValue',
-        on_delete=models.CASCADE
+        'product.PropertyValue'
     )
 
 class ProductVariant(BaseModel):
@@ -27,12 +25,10 @@ class ProductVariant(BaseModel):
     qty = models.IntegerField(default=0)
 
     property_names = models.ManyToManyField(
-        'product.PropertyName',
-        on_delete=models.CASCADE
+        'product.PropertyName'
     )
     property_values = models.ManyToManyField(
-        'product.PropertyValue',
-        on_delete=models.CASCADE
+        'product.PropertyValue'
     )
 
 class PropertyName(models.Model):
