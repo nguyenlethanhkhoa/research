@@ -5,6 +5,9 @@ class BaseModel(models.Model):
     modified_at = models.DateTimeField(blank=False, null=False, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
 
+    class Meta:
+        abstract = True
+
 class Category(BaseModel):
     parent_id = models.BigIntegerField()
     title = models.CharField(max_length=70)
