@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the product like this: BASE_DIR / 'subdir'.
@@ -31,10 +33,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'core.apps.CoreConfig'
-    'core.apps.CategoryConfig',
-    'core.apps.TagConfig',
-    'core.apps.ProductConfig'
+    'product.apps.core',
+    'product.apps.category',
+    'product.apps.tag',
+    'product.apps.product'
 ]
 
 MIDDLEWARE = [
