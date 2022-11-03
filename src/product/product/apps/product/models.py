@@ -1,5 +1,7 @@
 from django.db import models
 
+from product.apps.core.models import BaseModel
+
 class Product(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True)
