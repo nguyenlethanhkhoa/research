@@ -35,7 +35,7 @@ services:
       kong-db:
         condition: service_healthy
     env_file:
-      - ./services/kong/kong.env
+      - ./src/kong/kong.env
     networks:
       - default
     restart: on-failure
@@ -51,7 +51,7 @@ services:
       kong-db:
         condition: service_healthy
     env_file:
-      - services/kong/kong.env
+      - src/kong/kong.env
     networks:
       - default
       - service
@@ -85,7 +85,7 @@ services:
     container_name: konga
     hostname: konga
     env_file:
-      - services/kong/kong.env
+      - src/kong/kong.env
     networks:
       - default
       - service
