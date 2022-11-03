@@ -13,6 +13,9 @@ class Product(BaseModel):
         'category.Category', related_name='products'
     )
 
+    class Meta:
+        db_table = 'product'
+
 class ProductVariant(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
@@ -22,11 +25,17 @@ class ProductVariant(BaseModel):
         'product.PropertyName'
     )
 
+    class Meta:
+        db_table = 'product_variant'
+
 class PropertyName(models.Model):
     title = models.CharField(max_length=200)
     type = models.CharField(max_length=200)
     required = models.BooleanField(default=False)
     selectable = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'property_name'
 
 class PropertyValue(models.Model):
     property_id = models.BigIntegerField()
@@ -37,3 +46,6 @@ class PropertyValue(models.Model):
         'product.ProductVariant', on_delete=models.CASCADE, null=True
     )
     value = models.TextField()
+
+    class Meta:
+        db_table = 'property_value'
