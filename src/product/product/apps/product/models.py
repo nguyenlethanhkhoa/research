@@ -12,12 +12,6 @@ class Product(BaseModel):
     categories = models.ManyToManyField(
         'category.Category', related_name='products'
     )
-    property_names = models.ManyToManyField(
-        'product.PropertyName'
-    )
-    property_values = models.ManyToField(
-        'product.PropertyValue'
-    )
 
 class ProductVariant(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -26,9 +20,6 @@ class ProductVariant(BaseModel):
 
     property_names = models.ManyToManyField(
         'product.PropertyName'
-    )
-    property_values = models.ManyToManyField(
-        'product.PropertyValue'
     )
 
 class PropertyName(models.Model):
