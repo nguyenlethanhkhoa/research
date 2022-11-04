@@ -27,7 +27,12 @@ SECRET_KEY = 'django-insecure-monpo*cqvc%@b(80lx214m_y86$e#42qs(np2&6gcv4dd73byv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0.',
+    '128.199.232.249'
+]
 
 
 # Application definition
