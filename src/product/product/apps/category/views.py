@@ -17,7 +17,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         if parent_id:
             query = query.filter(parent_id=parent_id)
 
-        serializer = serializer_class(query, many=True)
+        serializer = self.serializer_class(query, many=True)
         return Response(serializer.data)
 
     def create(self, request):
@@ -28,5 +28,5 @@ class CategoryViewSet(viewsets.ModelViewSet):
         )
 
         item.save()
-        serializer = serializer_class(item)
+        serializer = self.serializer_class(item)
         return Response(serializer.data)
