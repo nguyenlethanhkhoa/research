@@ -38,7 +38,10 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
     'rest_framework',
+
     'product.apps.core',
     'product.apps.category',
     'product.apps.tag',

@@ -18,5 +18,5 @@ from django.urls import include, path
 from .apps.category.urls import router as category_router
 
 urlpatterns = [
-    path('categories/', include(category_router.urls)),
+    path('categories', include(category_router.urls)),
 ]
