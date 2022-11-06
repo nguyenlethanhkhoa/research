@@ -7,20 +7,22 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-    def get_queryset(self):
+    def list(self, request):
         query = Category.objects.all()
-        if self.request.query_params.title:
-            query = query.filter(
-                title=self.request.query_params.title
-            )
-        if self.request.query_params.parent_id:
-            query = query.filter(
-                parent_id=self.request.query_params.parent_id
-            )
+        title = request.query_params.get('title')
+        parent_id = request.query_params.get('parent_id')
+
+        if title:
+            query = query.filter(title=title)
+        if parent_id:
+            query = query.filter(parent_id=parent_id)
         return query
 
-    def perform_create(self, serializer):
-        serializer.save(
-            title=self.request.data.title,
-            parent_id=self.request.data.parent_id
+    def create(self, request):
+        item = Category.objects.create(
+            title=request.data.get('title'),
+            parent_id=request.data.get('parent_id'),
+            description=request.data.get('description')
         )
+
+        return item
