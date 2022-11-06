@@ -88,6 +88,8 @@ services:
       - default
       - service
     restart: on-failure
+    ports:
+      - 1337:1337
     depends_on:
       kong-db:
         condition: service_healthy
