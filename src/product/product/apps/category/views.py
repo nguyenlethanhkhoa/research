@@ -8,15 +8,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
     def list(self, request):
-        query = Category.objects.all()
         title = request.query_params.get('title')
         parent_id = request.query_params.get('parent_id')
 
+        query = self.queryset
         if title:
             query = query.filter(title=title)
         if parent_id:
             query = query.filter(parent_id=parent_id)
-        return query
+
+        serializer = serializer_class(query, many=True)
+        return Response(serializer.data)
 
     def create(self, request):
         item = Category.objects.create(
@@ -25,4 +27,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
             description=request.data.get('description')
         )
 
-        return item
+        item.save()
+        serializer = serializer_class(item)
+        return Response(serializer.data)
