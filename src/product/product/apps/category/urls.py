@@ -1,9 +1,8 @@
 from django.urls import path
 
-from . import views
+from views import CategoryViewSet
 
 app_name = 'categories'
 urlpatterns = [
-    # ex: /polls/
-    path('', views.get_items, name='index'),
+    path('', CategoryViewSet),
 ]

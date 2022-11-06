@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-def get_items(request):
-    return HttpResponse('Hello world')
+from models import Category
+from serializers import CategorySerializer
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
