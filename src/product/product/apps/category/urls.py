@@ -4,5 +4,5 @@ from .views import CategoryViewSet
 
 
 app_name = 'categories'
-router = DefaultRouter()
-router.register('', 'categories', CategoryViewSet)
+router = DefaultRouter(trailing_slash=False)
+router.register('categories', CategoryViewSet)
