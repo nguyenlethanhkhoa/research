@@ -3,18 +3,12 @@ from django.db import models
 from product.apps.core.models import BaseModel
 
 class CategoryManager(models.Manager):
-    def create(self, title, parent_id=None, description=None):
-        category = self.create(
-            title=title,
-            parent_id=parent_id,
-            description=description
-        )
-        return category
+    pass
 
 class Category(BaseModel):
-    parent_id = models.BigIntegerField()
+    parent_id = models.BigIntegerField(null=True)
     title = models.CharField(max_length=70)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     objects = CategoryManager()
 
