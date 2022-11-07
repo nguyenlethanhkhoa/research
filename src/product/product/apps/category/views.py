@@ -20,6 +20,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return query
 
     def perform_create(self):
-        serializer.save(owner=self.request.data)
+        serializer.save(
+            title=self.request.data.get('title'),
+            parent_id=self.request.data.get('parent_id'),
+            description=self.request.data.get('description')
+        )
 
 
