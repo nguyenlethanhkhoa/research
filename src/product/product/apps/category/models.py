@@ -2,8 +2,10 @@ from django.db import models
 
 from product.apps.core.models import BaseModel
 
+
 class CategoryManager(models.Manager):
     pass
+
 
 class Category(BaseModel):
     parent_id = models.BigIntegerField(null=True)

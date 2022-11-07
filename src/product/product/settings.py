@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'rest_framework',
+    'django.contrib.staticfiles',
+    'drf_yasg',
 
     'product.apps.core',
     'product.apps.category',
