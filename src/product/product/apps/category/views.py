@@ -2,9 +2,10 @@ from rest_framework import viewsets
 
 from .models import Category
 from .serializers import CategorySerializer
+from ..core.views import BaseViewSet
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(BaseViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -19,5 +20,4 @@ class CategoryViewSet(viewsets.ModelViewSet):
             query = query.filter(parent_id=parent_id)
 
         return query
-
 
