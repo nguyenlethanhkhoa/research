@@ -32,6 +32,6 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('product/categories', include(category_router.urls)),
+    path('product', include(category_router.urls)),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
 ]

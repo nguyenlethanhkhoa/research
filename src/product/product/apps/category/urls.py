@@ -1,6 +1,8 @@
+from rest_framework.routers import DefaultRouter
+
 from .views import CategoryViewSet
-from product.apps.core.routers import CustomRouter
+
 
 app_name = 'categories'
-router = CustomRouter()
-router.register('', CategoryViewSet)
+router = DefaultRouter()
+router.register('', 'categories', CategoryViewSet)
