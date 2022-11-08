@@ -1,9 +1,9 @@
 from django.db import models
 
-from product.apps.core.models import BaseModel
+from product.apps.core.models import BaseModel, BaseManager
 
 
-class CategoryManager(models.Manager):
+class CategoryManager(BaseManager):
     pass
 
 

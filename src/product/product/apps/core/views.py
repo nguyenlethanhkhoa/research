@@ -21,6 +21,7 @@ class BaseViewSet(mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
                   SoftDestroyModelMixin,
+                  mixins.ListModelMixin,
                   GenericViewSet):
     """
     A viewset that provides default `create()`, `retrieve()`, `update()`,
