@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from product.apps.core.models import BaseModel
@@ -12,6 +14,10 @@ class Product(BaseModel):
     )
     categories = models.ManyToManyField(
         'category.Category', related_name='products'
+    )
+
+    property_names = models.ManyToManyField(
+        'product.PropertyName'
     )
 
     class Meta:
@@ -43,12 +49,9 @@ class PropertyName(models.Model):
 
 class PropertyValue(models.Model):
     property_id = models.BigIntegerField()
-    product_id = models.ForeignKey(
-        'product.Product', on_delete=models.CASCADE, null=True
-    )
-    product_variant_id = models.ForeignKey(
-        'product.ProductVariant', on_delete=models.CASCADE, null=True
-    )
+    object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    object_content = GenericForeignKey('object_type', 'object_id')
     value = models.TextField()
 
     class Meta:
