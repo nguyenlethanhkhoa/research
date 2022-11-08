@@ -1,5 +1,3 @@
-from rest_framework import viewsets
-
 from .models import Category
 from .serializers import CategorySerializer
 from ..core.views import BaseViewSet

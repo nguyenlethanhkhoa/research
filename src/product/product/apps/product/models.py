@@ -2,6 +2,7 @@ from django.db import models
 
 from product.apps.core.models import BaseModel
 
+
 class Product(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True)
@@ -16,6 +17,7 @@ class Product(BaseModel):
     class Meta:
         db_table = 'product'
 
+
 class ProductVariant(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
@@ -28,6 +30,7 @@ class ProductVariant(BaseModel):
     class Meta:
         db_table = 'product_variant'
 
+
 class PropertyName(models.Model):
     title = models.CharField(max_length=200)
     type = models.CharField(max_length=200)
@@ -36,6 +39,7 @@ class PropertyName(models.Model):
 
     class Meta:
         db_table = 'property_name'
+
 
 class PropertyValue(models.Model):
     property_id = models.BigIntegerField()
