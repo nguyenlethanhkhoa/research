@@ -2,6 +2,8 @@ from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from product.apps.core.renderers import ApiRenderer
+
 
 class SoftDestroyModelMixin:
     """
@@ -27,4 +29,5 @@ class BaseViewSet(mixins.CreateModelMixin,
     A viewset that provides default `create()`, `retrieve()`, `update()`,
     `partial_update()`, `destroy()` and `list()` actions.
     """
-    pass
+
+    renderer_classes = [ApiRenderer]
