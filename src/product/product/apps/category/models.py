@@ -8,7 +8,7 @@ class CategoryManager(BaseManager):
 
 
 class Category(BaseModel):
-    parent_id = models.ForeignKey('self', null=True)
+    parent_id = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=70)
     description = models.TextField(null=True)
 
