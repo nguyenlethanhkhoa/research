@@ -31,12 +31,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
     properties = PropertyNameSerializer(many=True)
+    property_names = PropertyNameSerializer(many=True, required=False)
 
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
-    category_ids = serializers.StringRelatedField(many=True, write_only=True)
-    tag_ids = serializers.StringRelatedField(many=True, write_only=True)
+    category_ids = serializers.StringRelatedField(many=True)
+    tag_ids = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Product
@@ -47,17 +48,28 @@ class ProductSerializer(serializers.ModelSerializer):
         category_ids = validated_data.get('category_ids')
         tag_ids = validated_data.get('tag_ids')
 
-        product = Product.objects.create(**validated_data)
+        product = Product.objects.create(
+            title=validated_data.get('title'),
+            description=validated_data.get('description')
+        )
 
-        product.categories = Category.objects.filter(id__in=category_ids).all()
-        product.tags = Tag.objects.filter(id__in=tag_ids).all()
+        product.categories.set(Category.objects.filter(id__in=category_ids).all())
+        product.tags.set(Tag.objects.filter(id__in=tag_ids).all())
 
+        property_names = []
         for prop in properties:
-            item = PropertyName.objects.create(**prop)
+            item = PropertyName.objects.create(
+                title=prop.get('title'),
+                type=prop.get('type'),
+                required=prop.get('required'),
+                selectable=prop.get('selectable')
+            )
+            property_names.append(item)
             item_value = PropertyValue.objects.create(
                 property_id=item.id,
                 value=prop.get('value'),
                 object_type=product
             )
 
+        product.property_names.set(property_names)
         product.save()
