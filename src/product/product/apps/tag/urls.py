@@ -5,4 +5,4 @@ from .views import TagViewSet
 
 app_name = 'categories'
 router = DefaultRouter(trailing_slash=False)
-router.register('categories', TagViewSet)
+router.register('tags', TagViewSet)
