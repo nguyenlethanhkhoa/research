@@ -7,21 +7,18 @@ from ..tag.models import Tag
 from ..tag.serializers import TagSerializer
 
 
-class PropertyNameSerializer(serializers.ModelSerializer):
+class PropertySerializer(serializers.ModelSerializer):
+
+    value = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = PropertyName
         fields = '__all__'
 
 
-class PropertyValueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PropertyValue
-        fields = '__all__'
-
-
 class ProductVariantSerializer(serializers.ModelSerializer):
-    property_names = PropertyNameSerializer(many=True)
-    property_values = PropertyValueSerializer(many=True)
+    properties = PropertySerializer(many=True, read_only=True)
+    property_names = PropertySerializer(many=True, required=False)
 
     class Meta:
         model = ProductVariant
@@ -30,8 +27,8 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
-    properties = PropertyNameSerializer(many=True)
-    property_names = PropertyNameSerializer(many=True, required=False)
+    properties = PropertySerializer(many=True, read_only=True)
+    property_names = PropertySerializer(many=True, required=False)
 
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)

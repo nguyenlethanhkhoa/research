@@ -13,11 +13,11 @@ class ProductVariantManager(BaseManager):
     pass
 
 
-class PropertyNameManager(BaseManager):
+class PropertyNameManager(models.Manager):
     pass
 
 
-class PropertyValueManager(BaseManager):
+class PropertyValueManager(models.Manager):
     pass
 
 
