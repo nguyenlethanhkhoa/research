@@ -18,7 +18,6 @@ class PropertySerializer(serializers.ModelSerializer):
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     properties = PropertySerializer(many=True, read_only=True)
-    property_names = PropertySerializer(many=True, required=False)
 
     class Meta:
         model = ProductVariant
@@ -28,13 +27,12 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
     properties = PropertySerializer(many=True, read_only=True)
-    property_names = PropertySerializer(many=True, required=False)
 
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
-    category_ids = serializers.StringRelatedField(many=True)
-    tag_ids = serializers.StringRelatedField(many=True)
+    category_ids = serializers.IntegerField(many=True)
+    tag_ids = serializers.IntegerField(many=True)
 
     class Meta:
         model = Product
