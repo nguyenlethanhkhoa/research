@@ -69,4 +69,5 @@ class ProductSerializer(serializers.ModelSerializer):
             )
 
         product.property_names.set(property_names)
-        product.save()
+
+        return product
