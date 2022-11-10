@@ -31,8 +31,12 @@ class ProductSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
-    category_ids = serializers.IntegerField(many=True)
-    tag_ids = serializers.IntegerField(many=True)
+    category_ids = serializers.ListField(
+        child=serializers.IntegerField
+    )
+    tag_ids = serializers.ListField(
+        child=serializers.IntegerField
+    )
 
     class Meta:
         model = Product
