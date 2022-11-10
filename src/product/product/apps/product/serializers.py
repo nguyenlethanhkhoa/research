@@ -76,12 +76,13 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def to_representation(self, instance):
+        property_names = PropertyName.objects.filter(product__id=instance.id).all()
         return {
             'title': instance.id,
             'description': instance.description,
             'tags': instance.tags,
             'categories': instance.categories,
-            'properties': instance.properties,
+            'properties': PropertySerializer(property_names).data,
             'created_at': instance.created_at,
             'updated_at': instance.updated_at,
             'deleted_at': instance.deleted_at
