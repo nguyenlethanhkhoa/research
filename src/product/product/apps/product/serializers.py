@@ -21,26 +21,28 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductVariant
-        fields = '__all__'
+        exclude = ['property_names']
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    variants = ProductVariantSerializer(many=True, read_only=True)
-    properties = PropertySerializer(many=True, read_only=True)
+    variants = ProductVariantSerializer(many=True, write_only=True)
+    properties = PropertySerializer(many=True, write_only=True)
 
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
     category_ids = serializers.ListField(
-        child=serializers.IntegerField
+        child=serializers.IntegerField(),
+        write_only=True
     )
     tag_ids = serializers.ListField(
-        child=serializers.IntegerField
+        child=serializers.IntegerField(),
+        write_only=True
     )
 
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ['property_names']
 
     def create(self, validated_data):
         properties = validated_data.get('properties', [])
@@ -60,7 +62,6 @@ class ProductSerializer(serializers.ModelSerializer):
             item = PropertyName.objects.create(
                 title=prop.get('title'),
                 type=prop.get('type'),
-                required=prop.get('required'),
                 selectable=prop.get('selectable')
             )
             property_names.append(item)
@@ -73,3 +74,15 @@ class ProductSerializer(serializers.ModelSerializer):
         product.property_names.set(property_names)
 
         return product
+
+    def to_representation(self, instance):
+        return {
+            'title': instance.id,
+            'description': instance.description,
+            'tags': instance.tags,
+            'categories': instance.categories,
+            'properties': instance.properties,
+            'created_at': instance.created_at,
+            'updated_at': instance.updated_at,
+            'deleted_at': instance.deleted_at
+        }
