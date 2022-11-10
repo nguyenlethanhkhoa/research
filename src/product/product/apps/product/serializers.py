@@ -41,9 +41,9 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        properties = validated_data.get('properties')
-        category_ids = validated_data.get('category_ids')
-        tag_ids = validated_data.get('tag_ids')
+        properties = validated_data.get('properties', [])
+        category_ids = validated_data.get('category_ids', [])
+        tag_ids = validated_data.get('tag_ids', [])
 
         product = Product.objects.create(
             title=validated_data.get('title'),
