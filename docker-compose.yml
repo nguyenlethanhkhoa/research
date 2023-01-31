@@ -42,6 +42,9 @@ services:
   # Kong: The API Gateway
   #######################################
   kong:
+    # build:
+    #   context: .
+    #   dockerfile: src/kong/dockerfile
     image: kong:latest
     container_name: kong
     hostname: kong
@@ -54,7 +57,8 @@ services:
       - default
       - service
     ports:
-      - "127.0.0.1:8001:8001"
+      - 8001:8001
+      - 8000:8000
     healthcheck:
       test: ["CMD", "kong", "health"]
       interval: 10s
@@ -94,76 +98,81 @@ services:
       kong-db:
         condition: service_healthy
 
-  redis:
-    container_name: redis
-    hostname: redis
-    image: redis
-    ports:
-      - 6379:6379
-    networks:
-      - default
-      - service
-    restart: unless-stopped
+  # redis:
+  #   container_name: redis
+  #   hostname: redis
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+  #   networks:
+  #     - default
+  #     - service
+  #   restart: unless-stopped
 
-  cassandra:
-    image: docker.io/bitnami/cassandra:4.0
-    hostname: cassandra
-    container_name: cassandra
-    ports:
-      - 7000:7000
-      - 7001:7001
-      - 7199:7199
-      - 9042:9042
-      - 9160:9160
-    environment:
-      CASSANDRA_SEEDS: cassandra
-      MAX_HEAP_SIZE: 512M
-      HEAP_NEWSIZE: 100M
-      CASSANDRA_PASSWORD_SEEDER: "yes"
-      CASSANDRA_PASSWORD: cassandra
-      CASSANDRA_RPC_ADDRESS: 0.0.0.0
-    restart: unless-stopped
-    networks:
-      - default
-      - service
+  # cassandra:
+  #   image: docker.io/bitnami/cassandra:4.0
+  #   hostname: cassandra
+  #   container_name: cassandra
+  #   ports:
+  #     - 7000:7000
+  #     - 7001:7001
+  #     - 7199:7199
+  #     - 9042:9042
+  #     - 9160:9160
+  #   environment:
+  #     CASSANDRA_SEEDS: cassandra
+  #     MAX_HEAP_SIZE: 512M
+  #     HEAP_NEWSIZE: 100M
+  #     CASSANDRA_PASSWORD_SEEDER: "yes"
+  #     CASSANDRA_PASSWORD: cassandra
+  #     CASSANDRA_RPC_ADDRESS: 0.0.0.0
+  #   restart: unless-stopped
+  #   networks:
+  #     - default
+  #     - service
 
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3.11.3-management
     hostname: rabbitmq
     container_name: rabbitmq
     restart: unless-stopped
+    env_file:
+      - src/rabbitmq/.env
     networks:
       - default
       - service
-
-  mongo:
-    image: mongo
-    hostname: mongo
-    container_name: mongo
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-    volumes:
-      - /var/lib/mongodb/data/db:/data/db
-    networks:
-      - default
-      - service
-
-  mongo-express:
-    image: mongo-express
-    hostname: mongo-express
-    container_name: mongo-express
-    restart: unless-stopped
     ports:
-      - 10100:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
-    networks:
-      - default
-      - service
+      - 5672:5672
+      - 15672:15672
+
+  # mongo:
+  #   image: mongo
+  #   hostname: mongo
+  #   container_name: mongo
+  #   restart: unless-stopped
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: root
+  #   volumes:
+  #     - /var/lib/mongodb/data/db:/data/db
+  #   networks:
+  #     - default
+  #     - service
+
+  # mongo-express:
+  #   image: mongo-express
+  #   hostname: mongo-express
+  #   container_name: mongo-express
+  #   restart: unless-stopped
+  #   ports:
+  #     - 10100:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: root
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
+  #   networks:
+  #     - default
+  #     - service
 
   postgres:
     image: postgres
@@ -185,6 +194,47 @@ services:
     restart: unless-stopped
     volumes:
       - /var/lib/postgres/postgres/data:/var/lib/postgresql/data
+
+  keycloak-init-db:
+    image: postgres
+    container_name: keycloak-init-db
+    command: "psql -h postgres -U research -d postgres -c \"create database keycloak with encoding 'UTF8';\""
+    volumes:
+      - /var/lib/postgres/postgres/data:/var/lib/postgresql/data
+    environment:
+      - PGPASSWORD=research
+    networks:
+      - default
+
+  keycloak:
+    build:
+      context: .
+      dockerfile: src/keycloak/dockerfile
+    image: keycloak
+    hostname: keycloak
+    container_name: keycloak
+    env_file:
+      - src/keycloak/.env
+      # - keycloak/env/.local
+    command:
+      - start
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 8443:8443
+    networks:
+      - default
+      - service
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  registry:
+    image: registry
+    container_name: registry
+    ports:
+      - 5000:5000
+    restart: always
 
 networks:
   service:

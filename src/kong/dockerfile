@@ -1,0 +1,5 @@
+from kong:latest
+
+RUN luarocks install kong-oidc --local
+
+CMD ["kong", "docker-start"]
